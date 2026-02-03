@@ -1,7 +1,10 @@
 import torch
-from transformers import AutoFeatureExtractor, AutoModelForAudioClassification
+from transformers import (
+    AutoFeatureExtractor,
+    AutoModelForAudioClassification
+)
 
-MODEL_NAME = "koyelog/deepfake-voice-detector-sota"
+MODEL_NAME = "MattyB95/AST-ASVspoof2019-Synthetic-Voice-Detection"
 
 feature_extractor = AutoFeatureExtractor.from_pretrained(MODEL_NAME)
 model = AutoModelForAudioClassification.from_pretrained(MODEL_NAME)
@@ -9,12 +12,14 @@ model.eval()
 
 LABELS = model.config.id2label
 
-def predict(waveform):
+
+def predict(waveform: torch.Tensor):
     with torch.no_grad():
         inputs = feature_extractor(
             waveform.squeeze().numpy(),
             sampling_rate=16000,
-            return_tensors="pt"
+            return_tensors="pt",
+            padding=True
         )
 
         outputs = model(**inputs)
