@@ -3,25 +3,32 @@ from pydantic import BaseModel
 from audio_utils import decode_audio
 from model import predict
 
-API_KEY = "AIzaSyBelRXAJMPZpmdDxgohggt2TXr9E9y82kY"
+API_KEY = "buildathon2026"
 
 app = FastAPI(title="AI Generated Voice Detection API")
 
 class AudioRequest(BaseModel):
-    audio_base64: str
+    language: str
+    audioFormat: str
+    audioBase64: str
+
+@app.get("/")
+def home():
+    return {"message": "AI Voice Detector API is running"}
 
 @app.post("/detect")
 def detect_voice(
     request: AudioRequest,
-    authorization: str = Header(None)
+    x_api_key: str = Header(None)
 ):
-    if authorization != f"Bearer {API_KEY}":
+    if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    waveform = decode_audio(request.audio_base64)
+    waveform = decode_audio(request.audioBase64)
     label, confidence = predict(waveform)
 
     return {
         "classification": label,
-        "confidence": round(confidence, 4)
+        "confidence": round(confidence, 4),
+        "language": request.language
     }

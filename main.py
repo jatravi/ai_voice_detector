@@ -11,6 +11,7 @@ from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import warnings
+import kagglehub
 warnings.filterwarnings('ignore')
 
 # --- ENHANCED FEATURE EXTRACTION ---
@@ -97,7 +98,12 @@ def extract_advanced_features(file_path, augment=False):
 
 
 # --- SETUP PATHS ---
-base_path = r'C:\Users\Bhumi Bhardwaj\Downloads\for-2sec\for-2seconds'
+# base_path = r'C:\Users\Bhumi Bhardwaj\Downloads\for-2sec\for-2seconds'
+# Download dataset (works on server too)
+base_path = kagglehub.dataset_download("mohammedabdeldayem/the-fake-or-real-dataset")
+
+# Dataset structure
+dataset_root = os.path.join(base_path, "for-2sec", "for-2seconds")
 
 paths = {
     "train_real": os.path.join(base_path, 'training/real'),
